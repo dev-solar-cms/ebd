@@ -49,7 +49,7 @@ jobs:
       - name: Build app + unsigned Windows installer
         run: |
           npm run build
-          npx electron-builder --win
+          npx electron-builder --win --publish never
 
       - name: Upload unsigned artifact
         id: upload-unsigned-artifact
