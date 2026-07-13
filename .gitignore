@@ -5,6 +5,9 @@ cert
 .DS_Store
 .eslintcache
 *.log*
+*.exe
+*.dmg
+*.AppImage
 
 # Compiled binaries are too large for git (>100MB) and are hosted on the
 # download site / attached to GitHub releases instead.
