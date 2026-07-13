@@ -51,6 +51,13 @@
             <h3>Mac</h3>
             <p>Apple Silicon (M1 et suivants)</p>
             <a class="btn" href="download/ebd-1.0.0.dmg" download>Télécharger le .dmg</a>
+            <p class="warning">
+              Non signée : macOS affichera "l'application est endommagée". Ouvrez le Terminal
+              (dossier Applications &gt; Utilitaires) et collez, après avoir glissé l'app dans
+              votre dossier Applications :<br />
+              <code>xattr -cr "/Applications/E-Book Downloader.app"</code><br />
+              Relancez ensuite l'application normalement.
+            </p>
           </article>
 
           <article class="download-card" data-os="linux">
