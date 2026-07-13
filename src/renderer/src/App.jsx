@@ -1,12 +1,44 @@
 import { useEffect, useState } from 'react'
 import logo from './assets/logo.png'
 
-function Header() {
+const DNS_TUTORIALS = [
+  { label: 'Windows 11', url: 'https://www.youtube.com/watch?v=OQU-fKWAjgc' },
+  { label: 'Windows 10', url: 'https://www.youtube.com/watch?v=WxgqPymeeZI' },
+  { label: 'Mac', url: 'https://www.youtube.com/watch?v=DD-Ow7hKYw8' }
+]
+
+function Header({ version }) {
   return (
     <header className="app-header">
       <img src={logo} alt="E-Book Downloader" className="app-logo" />
-      <h1>E-Book Downloader</h1>
+      <h1>
+        E-Book Downloader
+        {version && <span className="app-version">v{version}</span>}
+      </h1>
     </header>
+  )
+}
+
+function ConnectivityErrorView({ onRetry }) {
+  return (
+    <div className="view">
+      <p className="error">Impossible d’accéder à Anna’s Archive.</p>
+      <p>
+        Cela signifie probablement que les DNS de votre ordinateur ne sont pas configurés pour
+        atteindre ce site (blocage fréquent chez certains fournisseurs d’accès). Suivez le tutoriel
+        correspondant à votre système pour changer vos DNS, puis relancez le test.
+      </p>
+      <ul className="dns-links">
+        {DNS_TUTORIALS.map((t) => (
+          <li key={t.label}>
+            <a href={t.url} target="_blank" rel="noreferrer">
+              {t.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <button onClick={onRetry}>Retester la connexion</button>
+    </div>
   )
 }
 
@@ -144,9 +176,31 @@ function DownloadView({ slowDownloadPath, onBack }) {
 
 function App() {
   const [view, setView] = useState({ name: 'search' })
+  const [version, setVersion] = useState(null)
+  const [connectivity, setConnectivity] = useState('checking')
+
+  useEffect(() => {
+    window.api.getVersion().then((v) => {
+      setVersion(v)
+      document.title = `E-Book Downloader v${v}`
+    })
+  }, [])
+
+  useEffect(() => {
+    window.api.checkConnectivity().then((ok) => setConnectivity(ok ? 'ok' : 'error'))
+  }, [])
+
+  function retryConnectivity() {
+    setConnectivity('checking')
+    window.api.checkConnectivity().then((ok) => setConnectivity(ok ? 'ok' : 'error'))
+  }
 
   let content
-  if (view.name === 'details') {
+  if (connectivity === 'checking') {
+    content = <p>Vérification de la connexion à Anna’s Archive...</p>
+  } else if (connectivity === 'error') {
+    content = <ConnectivityErrorView onRetry={retryConnectivity} />
+  } else if (view.name === 'details') {
     content = (
       <DetailsView
         id={view.id}
@@ -167,7 +221,7 @@ function App() {
 
   return (
     <>
-      <Header />
+      <Header version={version} />
       {content}
     </>
   )

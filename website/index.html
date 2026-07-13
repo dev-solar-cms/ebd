@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>E-Book Downloader — Téléchargement</title>
+    <meta
+      name="description"
+      content="Téléchargez E-Book Downloader, l'application de recherche et de téléchargement d'ebooks depuis Anna's Archive, pour Windows, Mac et Linux."
+    />
+    <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
+    <link rel="icon" href="img/ebd.jpg" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <img src="img/ebd.jpg" alt="E-Book Downloader" class="hero-image" />
+      <h1>E-Book Downloader</h1>
+      <p class="tagline">
+        Recherchez et téléchargez vos ebooks depuis Anna's Archive, en quelques clics, directement
+        dans votre dossier Téléchargements.
+      </p>
+      <p class="version">Version 1.0.0</p>
+    </header>
+
+    <main>
+      <section class="presentation">
+        <h2>À propos</h2>
+        <p>
+          E-Book Downloader est une application de bureau simple qui vous permet de rechercher des
+          livres électroniques sur Anna's Archive, de consulter les détails d'un livre, puis de le
+          télécharger en un clic dans votre dossier de téléchargements habituel. L'application est
+          entièrement gratuite et disponible pour Windows, Mac et Linux.
+        </p>
+      </section>
+
+      <section class="downloads" id="telechargement">
+        <h2>Télécharger</h2>
+        <div class="download-grid">
+          <article class="download-card" data-os="windows">
+            <h3>Windows</h3>
+            <p>Windows 10 et 11</p>
+            <span class="btn btn-disabled">Bientôt disponible</span>
+          </article>
+
+          <article class="download-card" data-os="mac">
+            <h3>Mac</h3>
+            <p>Apple Silicon (M1 et suivants)</p>
+            <a class="btn" href="download/ebd-1.0.0.dmg" download>Télécharger le .dmg</a>
+          </article>
+
+          <article class="download-card" data-os="linux">
+            <h3>Linux</h3>
+            <p>x86_64, format AppImage universel</p>
+            <a class="btn" href="download/ebd-1.0.0.AppImage" download
+              >Télécharger l'AppImage</a
+            >
+          </article>
+        </div>
+        <p class="hint" id="os-hint"></p>
+      </section>
+
+      <section class="dns-help">
+        <h2>L'application n'arrive pas à se connecter ?</h2>
+        <p>
+          Anna's Archive est parfois bloqué au niveau des DNS de votre fournisseur d'accès à
+          Internet. Le DNS (<a
+            href="https://fr.wikipedia.org/wiki/Domain_Name_System"
+            target="_blank"
+            rel="noreferrer"
+            >Domain Name System</a
+          >) est le service qui traduit un nom de domaine comme <code>annas-archive.gl</code> en
+          adresse IP joignable ; si le DNS de votre fournisseur refuse de le faire, votre
+          ordinateur ne peut pas atteindre le site. La solution consiste à configurer votre
+          ordinateur pour utiliser un DNS public (par exemple Google ou Cloudflare) à la place de
+          celui de votre fournisseur. Suivez le tutoriel correspondant à votre système :
+        </p>
+        <ul class="dns-links">
+          <li>
+            <a href="https://www.youtube.com/watch?v=OQU-fKWAjgc" target="_blank" rel="noreferrer"
+              >Changer les DNS sur Windows 11</a
+            >
+          </li>
+          <li>
+            <a href="https://www.youtube.com/watch?v=WxgqPymeeZI" target="_blank" rel="noreferrer"
+              >Changer les DNS sur Windows 10</a
+            >
+          </li>
+          <li>
+            <a href="https://www.youtube.com/watch?v=DD-Ow7hKYw8" target="_blank" rel="noreferrer"
+              >Changer les DNS sur Mac</a
+            >
+          </li>
+        </ul>
+        <p>
+          Une fois les DNS changés, relancez l'application : elle vérifie automatiquement la
+          connexion et vous propose un bouton pour retester si besoin.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>E-Book Downloader — Application gratuite et non affiliée à Anna's Archive.</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>

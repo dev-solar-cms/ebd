@@ -9,7 +9,9 @@ const api = {
     const listener = (_event, progress) => callback(progress)
     ipcRenderer.on('annas:download-progress', listener)
     return () => ipcRenderer.removeListener('annas:download-progress', listener)
-  }
+  },
+  checkConnectivity: () => ipcRenderer.invoke('annas:check-connectivity'),
+  getVersion: () => ipcRenderer.invoke('app:get-version')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

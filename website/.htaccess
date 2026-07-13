@@ -1,0 +1,8 @@
+# Empêche toute indexation du site par les moteurs de recherche et les
+# robots d'IA, en complément de robots.txt (certains robots l'ignorent).
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow, noarchive, nosnippet, noimageindex"
+</IfModule>
+
+# Empêche l'affichage du contenu des répertoires qui n'ont pas d'index.
+Options -Indexes

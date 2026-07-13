@@ -19,6 +19,22 @@ async function fetchHtml(path) {
   return res.text()
 }
 
+// Used at startup to detect the common failure mode where the ISP/OS DNS
+// resolver can't resolve annas-archive.gl at all (rather than a transient
+// HTTP error), since that's what points the user at the DNS help screen.
+export async function checkConnectivity() {
+  try {
+    const res = await fetch(BASE_URL, {
+      method: 'HEAD',
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+      signal: AbortSignal.timeout(6000)
+    })
+    return res.ok || (res.status >= 300 && res.status < 500)
+  } catch {
+    return false
+  }
+}
+
 // Strips the trailing "Save" button / inline <script> from the metadata line
 // and splits the remaining "✅ English [en] · PDF · 30.2MB · 2022 · ..." text
 // into its '·'-separated fields.

@@ -4,3 +4,8 @@ out
 .DS_Store
 .eslintcache
 *.log*
+
+# Compiled binaries are too large for git (>100MB) and are hosted on the
+# download site / attached to GitHub releases instead.
+website/download/*
+!website/download/.gitkeep

@@ -1,7 +1,7 @@
 {
   "name": "ebd",
   "productName": "E-Book Downloader",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Search and download ebooks from Anna's Archive",
   "main": "./out/main/index.js",
   "author": "ebd",

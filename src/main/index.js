@@ -1,50 +1,21 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
-import { readFileSync } from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import splashImage from '../../resources/splash.png?asset'
-import { searchBooks, getBookDetails } from './services/annasArchive'
+import { searchBooks, getBookDetails, checkConnectivity } from './services/annasArchive'
 import { resolveMirrorLink, downloadFile } from './services/downloader'
 
 // Must be set before app is ready so macOS picks it up for the menu bar too.
 app.setName('E-Book Downloader')
 
-const SPLASH_MIN_DURATION_MS = 1200
-
-function createSplashWindow() {
-  const splash = new BrowserWindow({
-    width: 320,
-    height: 320,
-    frame: false,
-    resizable: false,
-    movable: false,
-    show: false,
-    transparent: true,
-    alwaysOnTop: true,
-    webPreferences: { sandbox: true }
-  })
-
-  const imageBase64 = readFileSync(splashImage).toString('base64')
-  const html = `<!doctype html>
-<html>
-  <body style="margin:0;display:flex;align-items:center;justify-content:center;height:100vh;background:transparent">
-    <img src="data:image/png;base64,${imageBase64}" style="width:220px;height:220px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.4)" />
-  </body>
-</html>`
-
-  splash.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`)
-  splash.once('ready-to-show', () => splash.show())
-  return splash
-}
-
-function createWindow({ onReady } = {}) {
+function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
     autoHideMenuBar: true,
+    title: `E-Book Downloader ${app.getVersion()}`,
     icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -53,8 +24,7 @@ function createWindow({ onReady } = {}) {
   })
 
   mainWindow.on('ready-to-show', () => {
-    if (onReady) onReady(mainWindow)
-    else mainWindow.show()
+    mainWindow.show()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -96,19 +66,10 @@ app.whenReady().then(() => {
       win.webContents.send('annas:download-progress', progress)
     })
   })
+  ipcMain.handle('annas:check-connectivity', () => checkConnectivity())
+  ipcMain.handle('app:get-version', () => app.getVersion())
 
-  const splash = createSplashWindow()
-  const splashStartedAt = Date.now()
-
-  createWindow({
-    onReady: (mainWindow) => {
-      const remaining = Math.max(0, SPLASH_MIN_DURATION_MS - (Date.now() - splashStartedAt))
-      setTimeout(() => {
-        if (!splash.isDestroyed()) splash.destroy()
-        mainWindow.show()
-      }, remaining)
-    }
-  })
+  createWindow()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
