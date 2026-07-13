@@ -6,15 +6,15 @@ name: Build & sign Windows installer
 #
 # Setup required before this workflow can succeed (one-time):
 #   1. Apply for a free certificate at https://signpath.io/solutions/open-source-community
-#      (requires this repo to be public, which it is: github.com/dev-solar-cms/ebd)
-#   2. Once approved, create a SignPath project + signing policy for this
-#      app and replace the three placeholders below (SIGNPATH_ORG_ID,
-#      SIGNPATH_PROJECT_SLUG, SIGNPATH_POLICY_SLUG).
-#   3. Add repo secret SIGNPATH_API_TOKEN (Settings > Secrets and
+#      (requires this repo to be public, which it is: github.com/dev-solar-cms/ebd) — done,
+#      project/policy slug "ebd" created.
+#   2. Add repo secret SIGNPATH_API_TOKEN (Settings > Secrets and
 #      variables > Actions) with a SignPath API token that has
-#      "submitter" rights on that project.
-# Until then, this workflow will fail at the "Submit signing request" step
-# — that's expected, everything else (the build itself) works standalone.
+#      "submitter" rights on that project (see the SignPath user
+#      details page — never commit this token to the repo).
+# Until that secret is set, this workflow will fail at the "Submit
+# signing request" step — that's expected, everything else (the build
+# itself) works standalone.
 
 on:
   push:
@@ -23,9 +23,9 @@ on:
   workflow_dispatch:
 
 env:
-  SIGNPATH_ORG_ID: '<YOUR_ORG_ID>'
-  SIGNPATH_PROJECT_SLUG: '<YOUR_PROJECT_SLUG>'
-  SIGNPATH_POLICY_SLUG: '<YOUR_POLICY_SLUG>'
+  SIGNPATH_ORG_ID: 'f13ed15f-11c6-4345-abf2-d3be92506ecd'
+  SIGNPATH_PROJECT_SLUG: 'ebd'
+  SIGNPATH_POLICY_SLUG: 'ebd'
 
 jobs:
   build-and-sign:
