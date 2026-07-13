@@ -1,0 +1,83 @@
+name: Build & sign Windows installer
+
+# Builds the NSIS installer on a real Windows runner (no Wine needed),
+# submits it to SignPath for Authenticode signing, then attaches the
+# signed .exe to the matching GitHub release.
+#
+# Setup required before this workflow can succeed (one-time):
+#   1. Apply for a free certificate at https://signpath.io/solutions/open-source-community
+#      (requires this repo to be public, which it is: github.com/dev-solar-cms/ebd)
+#   2. Once approved, create a SignPath project + signing policy for this
+#      app and replace the three placeholders below (SIGNPATH_ORG_ID,
+#      SIGNPATH_PROJECT_SLUG, SIGNPATH_POLICY_SLUG).
+#   3. Add repo secret SIGNPATH_API_TOKEN (Settings > Secrets and
+#      variables > Actions) with a SignPath API token that has
+#      "submitter" rights on that project.
+# Until then, this workflow will fail at the "Submit signing request" step
+# — that's expected, everything else (the build itself) works standalone.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  SIGNPATH_ORG_ID: '<YOUR_ORG_ID>'
+  SIGNPATH_PROJECT_SLUG: '<YOUR_PROJECT_SLUG>'
+  SIGNPATH_POLICY_SLUG: '<YOUR_POLICY_SLUG>'
+
+jobs:
+  build-and-sign:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app + unsigned Windows installer
+        run: |
+          npm run build
+          npx electron-builder --win
+
+      - name: Upload unsigned artifact
+        id: upload-unsigned-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-installer
+          path: dist/*.exe
+
+      - name: Submit signing request
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
+          organization-id: '${{ env.SIGNPATH_ORG_ID }}'
+          project-slug: '${{ env.SIGNPATH_PROJECT_SLUG }}'
+          signing-policy-slug: '${{ env.SIGNPATH_POLICY_SLUG }}'
+          artifact-configuration-slug: 'default'
+          github-artifact-id: '${{ steps.upload-unsigned-artifact.outputs.artifact-id }}'
+          wait-for-completion: true
+          output-artifact-directory: 'signed'
+
+      - name: Upload signed artifact (workflow run)
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-installer
+          path: signed/*.exe
+
+      - name: Attach signed installer to the GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        run: gh release upload "${{ github.ref_name }}" signed/*.exe --clobber
